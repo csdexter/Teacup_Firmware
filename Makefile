@@ -30,8 +30,8 @@
 ##############################################################################
 
 # MCU_TARGET = atmega168
-# MCU_TARGET = atmega328p
-MCU_TARGET = atmega644p
+MCU_TARGET = atmega328p
+# MCU_TARGET = atmega644p
 # MCU_TARGET = atmega1280
 # MCU_TARGET = atmega2560
 # MCU_TARGET = at90usb1287
