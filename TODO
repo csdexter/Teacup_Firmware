@@ -1,0 +1,11 @@
+1) Remove all 3D-printer specific stuff (mainly anything extruder or heater -related) and tweak what's left for style and size (i.e. if the ceiling's gone, we don't need the pillars either)
+2) Tag/snapshot this as the smallest, simplest G-code interpreter that can drive the CNC
+3) Add charge pump code (12.5kHz 50% duty cycle square wave)
+4) Add intended/missing language features to gcode_*.[ch] using existing structure and conventions
+5) Add intended/missing functional features to rest of the code (most notably, arcs)
+6) Make a single goodwill attempt to simplify math (e.g. switch to fixed-point integer-simulated floats, use lookup tables etc.)
+7) Evaluate the intercom code for reuse (we will have two MCUs talking to each other after all), design alternate solution if not appropriate
+8) "Cut along the dashed line" and separate gcode_*.[ch] from the tree. Plug intercom code in its place and graft. Prefer the simplest most compact protocol for inter-MCU communication.
+9) Move pruned part to the user interface (panel) MCU firmware.
+
+Caveats: the hard math may not fit (alongside everything else) on the panel MCU, thus forcing us to follow the initial 3-core design: panel, math, physics.
