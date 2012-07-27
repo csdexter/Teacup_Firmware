@@ -12,12 +12,11 @@
 	1. Mechanical/Hardware
 	2. Acceleration settings
 	3. Pinouts
-	4. Temperature sensors
-	5. Heaters
-	6. Communication options
-	7. Miscellaneous
-	8. Appendix A - PWMable pins and mappings
+	4. Communication options
+	5. Miscellaneous
+	6. Appendix A - PWMable pins and mappings
 */
+
 
 /***************************************************************************\
 *                                                                           *
@@ -48,7 +47,7 @@
 		All numbers are fixed point integers, so no more than 3 digits to the right of the decimal point, please :-)
 */
 
-/** \def STEPS_PER_M
+/** \def STEPS_PER_X
 	steps per meter ( = steps per mm * 1000 )
 
 	calculate these values appropriate for your machine
@@ -67,11 +66,6 @@
 #define	STEPS_PER_M_Y					200000
 #define	STEPS_PER_M_Z					333333
 
-/// http://blog.arcol.hu/?p=157 may help with this one
-//TODO: remove as it's extruder-related
-#define	STEPS_PER_M_E					320000
-
-
 /*
 	Values depending on the capabilities of your stepper motors and other mechanics.
 		All numbers are integers, no decimals allowed.
@@ -83,24 +77,17 @@
 #define	MAXIMUM_FEEDRATE_X		2500
 #define	MAXIMUM_FEEDRATE_Y		2500
 #define	MAXIMUM_FEEDRATE_Z		2500
-//TODO: remove as it's extruder-related
-#define	MAXIMUM_FEEDRATE_E		200
 
 /// used when searching endstops and as default feedrate
 #define	SEARCH_FEEDRATE_X			60
 #define	SEARCH_FEEDRATE_Y			60
 #define	SEARCH_FEEDRATE_Z			60
-// no SEARCH_FEEDRATE_E, as E can't be searched
 
 /** \def SLOW_HOMING
 	wether to search the home point slowly
 		With some endstop configurations, like when probing for the surface of a PCB, you can't deal with overrunning the endstop. In such a case, uncomment this definition.
 */
 // #define	SLOW_HOMING
-
-/// this is how many steps to suck back the filament by when we stop. set to zero to disable
-//TODO: remove as it's extruder-related
-#define	E_STARTSTOP_STEPS			20
 
 /**
 	Soft axis limits, in mm.
@@ -115,14 +102,6 @@
 
 #define	Z_MIN			0.0
 #define	Z_MAX			110.0
-
-/**	\def E_ABSOLUTE
-	Some G-Code creators produce relative length commands for the extruder, others absolute ones. G-Code using absolute lengths can be recognized when there are G92 E0 commands from time to time. If you have G92 E0 in your G-Code, define this flag.
-
-	This is the startup default and can be changed with M82/M83 while running.
-*/
-// #define E_ABSOLUTE
-
 
 
 /***************************************************************************\
@@ -166,7 +145,6 @@
 		// TODO: figure out how to add acceleration to this algorithm
 */
 // #define ACCELERATION_TEMPORAL
-
 
 
 /***************************************************************************\
@@ -225,152 +203,17 @@
 //#define	Z_INVERT_MAX
 //#define	Z_INVERT_ENABLE
 
-//TODO: remove as it's extruder-related
-//#define	E_STEP_PIN						DIO7
-//#define	E_DIR_PIN							DIO8
-//#define E_ENABLE_PIN					xxxx
-//#define	E_INVERT_DIR
-//#define	E_INVERT_ENABLE
-
 //TODO: we need a 12.5kHz charge-pump generator here or in the UI MCU
 //#define	PS_ON_PIN							DIO9
 //#define	STEPPER_ENABLE_PIN		xxxx
 //#define	STEPPER_INVERT_ENABLE
 
 
-
 /***************************************************************************\
 *                                                                           *
-* 4. TEMPERATURE SENSORS                                                    *
+* 4. COMMUNICATION OPTIONS                                                  *
 *                                                                           *
 \***************************************************************************/
-//TODO: remove as it's extruder-related
-/**
-	TEMP_HYSTERESIS: actual temperature must be target +/- hysteresis before target temperature can be achieved.
-	Unit is degree Celsius.
-*/
-#define	TEMP_HYSTERESIS				5
-/**
-	TEMP_RESIDENCY_TIME: actual temperature must be close to target for this long before target is achieved
-
-	temperature is "achieved" for purposes of M109 and friends when actual temperature is within [hysteresis] of target for [residency] seconds
-*/
-#define	TEMP_RESIDENCY_TIME		60
-
-/// which temperature sensors are you using? List every type of sensor you use here once, to enable the appropriate code. Intercom is the gen3-style separate extruder board.
-// #define	TEMP_MAX6675
-//#define	TEMP_THERMISTOR
-// #define	TEMP_AD595
-// #define	TEMP_PT100
-// #define	TEMP_INTERCOM
-#define	TEMP_NONE
-
-/***************************************************************************\
-*                                                                           *
-* Define your temperature sensors here. One line for each sensor, only      *
-* limited by the number of available ATmega pins.                           *
-*                                                                           *
-* For a GEN3 set temp_type to TT_INTERCOM and temp_pin to 0.                *
-*                                                                           *
-* Types are same as TEMP_ list above - TT_MAX6675, TT_THERMISTOR, TT_AD595, *
-*   TT_PT100, TT_INTERCOM, TT_NONE. See list in temp.c.                     *
-*                                                                           *
-* The "additional" field is used for TT_THERMISTOR only. It defines the     *
-* name of the table(s) in ThermistorTable.h to use. Typically, this is      *
-* THERMISTOR_EXTRUDER for the first or only table, or THERMISTOR_BED for    *
-* the second table. See also early in ThermistorTable.{single|double}.h.    *
-*                                                                           *
-\***************************************************************************/
-
-#ifndef DEFINE_TEMP_SENSOR
-	#define DEFINE_TEMP_SENSOR(...)
-#endif
-
-//                 name       type            pin        additional
-//DEFINE_TEMP_SENSOR(extruder,  TT_THERMISTOR,  0,         THERMISTOR_EXTRUDER)
-//DEFINE_TEMP_SENSOR(bed,       TT_THERMISTOR,  1,         THERMISTOR_EXTRUDER)
-// "noheater" is a special name for a sensor which doesn't have a heater.
-// Use "M105 P#" to read it, where # is a zero-based index into this list.
-// DEFINE_TEMP_SENSOR(noheater,  TT_THERMISTOR,  1,            0)
-
-
-
-/***************************************************************************\
-*                                                                           *
-* 5. HEATERS                                                                *
-*                                                                           *
-\***************************************************************************/
-//TODO: remove as it's extruder-related
-/** \def HEATER_SANITY_CHECK
-	check if heater responds to changes in target temperature, disable and spit errors if not
-	largely untested, please comment in forum if this works, or doesn't work for you!
-*/
-// #define	HEATER_SANITY_CHECK
-
-/***************************************************************************\
-*                                                                           *
-* Define your heaters here                                                  *
-*                                                                           *
-* If your heater isn't on a PWM-able pin, set heater_pwm to zero and we'll  *
-*   use bang-bang output. Note that PID will still be used                  *
-*                                                                           *
-* See Appendix 8 at the end of this file for PWMable pin mappings           *
-*                                                                           *
-* If a heater isn't attached to a temperature sensor above, it can still be *
-*   controlled by host but otherwise is ignored by firmware                 *
-*                                                                           *
-* To attach a heater to a temp sensor above, simply use exactly the same    *
-*   name - copy+paste is your friend                                        *
-*                                                                           *
-* Some common names are 'extruder', 'bed', 'fan', 'motor'                   *
-*                                                                           *
-* A milling spindle can also be defined as a heater. Attach it to a         *
-* temperature sensor of TT_NONE, then you can control the spindle's rpm     *
-* via temperature commands. M104 S1..255 for spindle on, M104 S0 for off.   *
-*                                                                           *
-\***************************************************************************/
-
-#ifndef DEFINE_HEATER
-	#define DEFINE_HEATER(...)
-#endif
-
-//            name      port
-//DEFINE_HEATER(extruder, PB3)
-//DEFINE_HEATER(bed,      PB4)
-// DEFINE_HEATER(fan,      PINB4)
-// DEFINE_HEATER(chamber,  PIND7)
-// DEFINE_HEATER(motor,    PIND6)
-
-/// and now because the c preprocessor isn't as smart as it could be,
-/// uncomment the ones you've listed above and comment the rest.
-/// NOTE: these are used to enable various capability-specific chunks of code, you do NOT need to create new entries unless you are adding new capabilities elsewhere in the code!
-/// so if you list a bed above, uncomment HEATER_BED, but if you list a chamber you do NOT need to create HEATED_CHAMBER
-/// I have searched high and low for a way to make the preprocessor do this for us, but so far I have not found a way.
-
-//#define	HEATER_EXTRUDER HEATER_extruder
-//#define HEATER_BED HEATER_bed
-// #define HEATER_FAN HEATER_fan
-// #define HEATER_CHAMBER HEATER_chamber
-// #define HEATER_MOTOR HEATER_motor
-
-
-
-/***************************************************************************\
-*                                                                           *
-* 6. COMMUNICATION OPTIONS                                                  *
-*                                                                           *
-\***************************************************************************/
-
-/** \def REPRAP_HOST_COMPATIBILITY
-	RepRap Host changes it's communications protocol from time to time and intentionally avoids backwards compatibility. Set this to the date the source code of your Host was fetched from RepRap's repository, which is likely also the build date.
-	See the discussion on the reprap-dev mailing list from 11 Oct. 2010.
-
-	Undefine it for best human readability, set it to an old date for compatibility with hosts before August 2010
-*/
-// #define REPRAP_HOST_COMPATIBILITY 19750101
-// #define REPRAP_HOST_COMPATIBILITY 20100806
-// #define REPRAP_HOST_COMPATIBILITY 20110509
-// #define REPRAP_HOST_COMPATIBILITY <date of next RepRap Host compatibility break>
 
 /**
 	Baud rate for the connection to the host. Usually 115200, other common values are 19200, 38400 or 57600.
@@ -385,10 +228,9 @@
 #define	XONXOFF
 
 
-
 /***************************************************************************\
 *                                                                           *
-* 7. MISCELLANEOUS OPTIONS                                                  *
+* 5. MISCELLANEOUS OPTIONS                                                  *
 *                                                                           *
 \***************************************************************************/
 
@@ -399,23 +241,6 @@
 		use with serial terminal or other suitable talker only.
 */
 // #define	DEBUG
-//TODO: remove as it's extruder-related
-/** \def BANG_BANG
-BANG_BANG
-drops PID loop from heater control, reduces code size significantly (1300 bytes!)
-may allow DEBUG on '168
-*/
-#define	BANG_BANG
-/** \def BANG_BANG_ON
-BANG_BANG_ON
-PWM value for 'on'
-*/
-#define	BANG_BANG_ON	200
-/** \def BANG_BANG_OFF
-BANG_BANG_OFF
-PWM value for 'off'
-*/
-#define	BANG_BANG_OFF	45
 
 /**
 	move buffer size, in number of moves
@@ -424,23 +249,10 @@ PWM value for 'off'
 */
 #define	MOVEBUFFER_SIZE	8
 
-/** \def DC_EXTRUDER
-	DC extruder
-		If you have a DC motor extruder, configure it as a "heater" above and define this value as the index or name. You probably also want to comment out E_STEP_PIN and E_DIR_PIN in the Pinouts section above.
-*/
-// #define	DC_EXTRUDER HEATER_motor
-// #define	DC_EXTRUDER_PWM	180
-
 /** \def USE_WATCHDOG
 	Teacup implements a watchdog, which has to be reset every 250ms or it will reboot the controller. As rebooting (and letting the GCode sending application trying to continue the build with a then different Home point) is probably even worse than just hanging, and there is no better restore code in place, this is disabled for now.
 */
 #define USE_WATCHDOG
-
-/**
-	analog subsystem stuff
-	REFERENCE - which analog reference to use. see analog.h for choices
-*/
-#define	REFERENCE			REFERENCE_AVCC
 
 /** \def STEP_INTERRUPT_INTERRUPTIBLE
 	this option makes the step interrupt interruptible (nested).
@@ -449,22 +261,6 @@ PWM value for 'off'
 */
 //#define		STEP_INTERRUPT_INTERRUPTIBLE	1
 
-/**
-	temperature history count. This is how many temperature readings to keep in order to calculate derivative in PID loop
-	higher values make PID derivative term more stable at the expense of reaction time
-*/
-#define	TH_COUNT					8
-
-/** \def FAST_PWM
-	Teacup offers two PWM frequencies, 76(61) Hz and 78000(62500) Hz on a 20(16) MHz electronics. The faster one is the default, as it's what most other firmwares do. It can make the heater MOSFETs pretty hot, though.
-
-	Comment this option out if your MOSFETs overheat. Drawback is, in a quiet environment you might notice the heaters and your power supply humming, then.
-*/
-#define	FAST_PWM
-
-/// this is the scaling of internally stored PID values. 1024L is a good value
-#define	PID_SCALE						1024L
-
 /** \def ENDSTOP_STEPS
 	number of steps to run into the endstops intentionally
 		As Endstops trigger false alarm sometimes, Teacup debounces them by counting a number of consecutive positives. Valid range is 1...255. Use 4 or less for reliable endstops, 8 or even more for flaky ones.
@@ -472,10 +268,9 @@ PWM value for 'off'
 #define	ENDSTOP_STEPS	4
 
 
-
 /***************************************************************************\
 *                                                                           *
-* 8. APPENDIX A - PWMABLE PINS AND MAPPINGS                                 *
+* 6. APPENDIX A - PWMABLE PINS AND MAPPINGS                                 *
 *                                                                           *
 *                                                                           *
 * list of PWM-able pins and corresponding timers                            *
