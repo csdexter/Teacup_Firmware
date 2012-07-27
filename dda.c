@@ -116,15 +116,13 @@ void dda_create(DDA *dda, TARGET *target) {
 	dda->z_direction = (target->Z >= startpoint.Z)?1:0;
 
 	if (DEBUG_DDA && (debug_flags & DEBUG_DDA))
-		sersendf_P(PSTR("%ld,%ld,%ld,%ld] ["), target->X - startpoint.X, target->Y - startpoint.Y, target->Z - startpoint.Z, target->E - startpoint.E);
+		sersendf_P(PSTR("%ld,%ld,%ld] ["), target->X - startpoint.X, target->Y - startpoint.Y, target->Z - startpoint.Z);
 
 	dda->total_steps = dda->x_delta;
 	if (dda->y_delta > dda->total_steps)
 		dda->total_steps = dda->y_delta;
 	if (dda->z_delta > dda->total_steps)
 		dda->total_steps = dda->z_delta;
-	if (dda->e_delta > dda->total_steps)
-		dda->total_steps = dda->e_delta;
 
 	if (DEBUG_DDA && (debug_flags & DEBUG_DDA))
 		sersendf_P(PSTR("ts:%lu"), dda->total_steps);
@@ -139,7 +137,6 @@ void dda_create(DDA *dda, TARGET *target) {
 		x_enable();
 		y_enable();
 		// Z is enabled in dda_start()
-		e_enable();
 
 		// since it's unusual to combine X, Y and Z changes in a single move on reprap, check if we can use simpler approximations before trying the full 3d approximation.
 		if (z_delta_um == 0)
@@ -338,7 +335,6 @@ void dda_start(DDA *dda) {
 		x_direction(dda->x_direction);
 		y_direction(dda->y_direction);
 		z_direction(dda->z_direction);
-		e_direction(dda->e_direction);
 
 		#ifdef	DC_EXTRUDER
 		if (dda->e_delta)
@@ -347,14 +343,14 @@ void dda_start(DDA *dda) {
 
 		// initialise state variable
 		move_state.x_counter = move_state.y_counter = move_state.z_counter = \
-			move_state.e_counter = -(dda->total_steps >> 1);
+			-(dda->total_steps >> 1);
 		memcpy(&move_state.x_steps, &dda->x_delta, sizeof(uint32_t) * 4);
 		#ifdef ACCELERATION_RAMPING
 			move_state.step_no = 0;
 		#endif
 		#ifdef ACCELERATION_TEMPORAL
 		move_state.x_time = move_state.y_time = \
-			move_state.z_time = move_state.e_time = 0UL;
+			move_state.z_time = 0UL;
 		#endif
 
 		// ensure this dda starts
@@ -515,24 +511,6 @@ void dda_step(DDA *dda) {
 	}
 #endif
 
-#if ! defined ACCELERATION_TEMPORAL
-	if (move_state.e_steps) {
-		move_state.e_counter -= dda->e_delta;
-		if (move_state.e_counter < 0) {
-			e_step();
-			move_state.e_steps--;
-			move_state.e_counter += dda->total_steps;
-		}
-	}
-#else	// ACCELERATION_TEMPORAL
-	if (dda->axis_to_step == 'e') {
-		e_step();
-		move_state.e_steps--;
-		move_state.e_time += dda->e_step_interval;
-		move_state.all_time = move_state.e_time;
-	}
-#endif
-
 	#if STEP_INTERRUPT_INTERRUPTIBLE
 		// Since we have sent steps to all the motors that will be stepping
 		// and the rest of this function isn't so time critical, this interrupt
@@ -614,7 +592,7 @@ void dda_step(DDA *dda) {
 
 	// TODO: If we stop axes individually, could we home two or more axes at the same time?
 	if (dda->endstop_check != 0x0 && endstop_not_done == 0x0) {
-		move_state.x_steps = move_state.y_steps = move_state.z_steps = move_state.e_steps = 0;
+		move_state.x_steps = move_state.y_steps = move_state.z_steps = 0;
 		// as we stop without ramping down, we have to re-init our ramping here
 		dda_init();
 	}
@@ -661,7 +639,7 @@ void dda_step(DDA *dda) {
 
 	// If there are no steps left, we have finished.
 	if (move_state.x_steps == 0 && move_state.y_steps == 0 &&
-	    move_state.z_steps == 0 && move_state.e_steps == 0) {
+	    move_state.z_steps == 0) {
 		dda->live = 0;
 		#ifdef	DC_EXTRUDER
 			heater_set(DC_EXTRUDER, 0);
@@ -698,7 +676,6 @@ void update_current_position() {
 		current_position.X = startpoint.X;
 		current_position.Y = startpoint.Y;
 		current_position.Z = startpoint.Z;
-		current_position.E = startpoint.E;
 	}
 	else if (dda->live) {
 		if (dda->x_direction)

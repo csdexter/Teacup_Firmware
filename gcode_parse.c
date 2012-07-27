@@ -10,7 +10,6 @@
 #include	"sermsg.h"
 #include	"dda_queue.h"
 #include	"debug.h"
-#include	"heater.h"
 #include	"sersendf.h"
 
 #include	"gcode_process.h"
@@ -88,10 +87,6 @@ void gcode_init(void) {
 	// assume a G1 by default
 	next_target.seen_G = 1;
 	next_target.G = 1;
-
-	#ifndef E_ABSOLUTE
-		next_target.option_e_relative = 1;
-	#endif
 }
 
 /// Character Received - add it to our command
@@ -140,14 +135,6 @@ void gcode_parse_char(uint8_t c) {
 						next_target.target.Z = decfloat_to_int(&read_digit, 1000);
 					if (DEBUG_ECHO && (debug_flags & DEBUG_ECHO))
 						serwrite_int32(next_target.target.Z);
-					break;
-				case 'E':
-					if (next_target.option_inches)
-						next_target.target.E = decfloat_to_int(&read_digit, 25400);
-					else
-						next_target.target.E = decfloat_to_int(&read_digit, 1000);
-					if (DEBUG_ECHO && (debug_flags & DEBUG_ECHO))
-						serwrite_uint32(next_target.target.E);
 					break;
 				case 'F':
 					// just use raw integer, we need move distance and n_steps to convert it to a useful value, so wait until we have those to convert it
@@ -216,9 +203,6 @@ void gcode_parse_char(uint8_t c) {
 				break;
 			case 'Z':
 				next_target.seen_Z = 1;
-				break;
-			case 'E':
-				next_target.seen_E = 1;
 				break;
 			case 'F':
 				next_target.seen_F = 1;
@@ -338,7 +322,7 @@ void gcode_parse_char(uint8_t c) {
 
 		// reset variables
 		next_target.seen_X = next_target.seen_Y = next_target.seen_Z = \
-			next_target.seen_E = next_target.seen_F = next_target.seen_S = \
+			next_target.seen_F = next_target.seen_S = \
 			next_target.seen_P = next_target.seen_T = next_target.seen_N = \
 			next_target.seen_M = next_target.seen_checksum = next_target.seen_semi_comment = \
 			next_target.seen_parens_comment = next_target.checksum_read = \
@@ -351,9 +335,6 @@ void gcode_parse_char(uint8_t c) {
 
 		if (next_target.option_all_relative) {
 			next_target.target.X = next_target.target.Y = next_target.target.Z = 0;
-		}
-		if (next_target.option_all_relative || next_target.option_e_relative) {
-			next_target.target.E = 0;
 		}
 	}
 }

@@ -19,7 +19,7 @@
 	\struct TARGET
 	\brief target is simply a point in space/time
 
-	X, Y, Z and E are in micrometers unless explcitely stated. F is in mm/min.
+	X, Y, Z are in micrometers unless explcitely stated. F is in mm/min.
 */
 typedef struct {
 // TODO TODO: We should really make up a loop for all axes.
@@ -28,10 +28,7 @@ typedef struct {
 	int32_t						X;
 	int32_t						Y;
 	int32_t						Z;
-	int32_t						E;
 	uint32_t					F;
-
-	uint8_t		e_relative				:1; ///< bool: e axis relative? Overrides all_relative
 } TARGET;
 
 /**
@@ -45,13 +42,11 @@ typedef struct {
 	int32_t						x_counter; ///< counter for total_steps vs this axis
 	int32_t						y_counter; ///< counter for total_steps vs this axis
 	int32_t						z_counter; ///< counter for total_steps vs this axis
-	int32_t						e_counter; ///< counter for total_steps vs this axis
 
 	// step counters
 	uint32_t					x_steps; ///< number of steps on X axis
 	uint32_t					y_steps; ///< number of steps on Y axis
 	uint32_t					z_steps; ///< number of steps on Z axis
-	uint32_t					e_steps; ///< number of steps on E axis
 
 	#ifdef ACCELERATION_RAMPING
 	/// counts actual steps done
@@ -65,7 +60,6 @@ typedef struct {
 	uint32_t					x_time; ///< time of the last x step
 	uint32_t					y_time; ///< time of the last y step
 	uint32_t					z_time; ///< time of the last z step
-	uint32_t					e_time; ///< time of the last e step
 	uint32_t					all_time; ///< time of the last step of any axis
 	#endif
 
@@ -101,7 +95,6 @@ typedef struct {
 			uint8_t						x_direction		:1; ///< direction flag for X axis
 			uint8_t						y_direction		:1; ///< direction flag for Y axis
 			uint8_t						z_direction		:1; ///< direction flag for Z axis
-			uint8_t						e_direction		:1; ///< direction flag for E axis
 		};
 		uint8_t							allflags;	///< used for clearing all flags
 	};
@@ -110,7 +103,6 @@ typedef struct {
 	uint32_t					x_delta; ///< number of steps on X axis
 	uint32_t					y_delta; ///< number of steps on Y axis
 	uint32_t					z_delta; ///< number of steps on Z axis
-	uint32_t					e_delta; ///< number of steps on E axis
 
 	/// total number of steps: set to \f$\max(\Delta x, \Delta y, \Delta z, \Delta e)\f$
 	uint32_t					total_steps;
@@ -133,7 +125,6 @@ typedef struct {
 	uint32_t					x_step_interval; ///< time between steps on X axis
 	uint32_t					y_step_interval; ///< time between steps on Y axis
 	uint32_t					z_step_interval; ///< time between steps on Z axis
-	uint32_t					e_step_interval; ///< time between steps on E axis
 	uint8_t						axis_to_step;    ///< axis to be stepped on the next interrupt
 	#endif
 
@@ -169,10 +160,10 @@ void dda_new_startpoint(void);
 void dda_create(DDA *dda, TARGET *target);
 
 // start a created DDA (called from timer interrupt)
-void dda_start(DDA *dda)																						__attribute__ ((hot));
+void dda_start(DDA *dda)	__attribute__ ((hot));
 
 // DDA takes one step (called from timer interrupt)
-void dda_step(DDA *dda)																							__attribute__ ((hot));
+void dda_step(DDA *dda)		__attribute__ ((hot));
 
 // update current_position
 void update_current_position(void);

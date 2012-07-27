@@ -1,3 +1,4 @@
+Road map:
 1) Remove all 3D-printer specific stuff (mainly anything extruder or heater -related) and tweak what's left for style and size (i.e. if the ceiling's gone, we don't need the pillars either)
 2) Tag/snapshot this as the smallest, simplest G-code interpreter that can drive the CNC
 3) Add charge pump code (12.5kHz 50% duty cycle square wave)
@@ -9,3 +10,5 @@
 9) Move pruned part to the user interface (panel) MCU firmware.
 
 Caveats: the hard math may not fit (alongside everything else) on the panel MCU, thus forcing us to follow the initial 3-core design: panel, math, physics.
+
+Ongoing: remove copy/pasted code, generalize whenever needed

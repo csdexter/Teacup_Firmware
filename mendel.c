@@ -35,12 +35,10 @@
 #include	"dda.h"
 #include	"gcode_parse.h"
 #include	"timer.h"
-#include	"temp.h"
 #include	"sermsg.h"
 #include	"watchdog.h"
 #include	"debug.h"
 #include	"sersendf.h"
-#include	"heater.h"
 #include	"pinio.h"
 #include	"arduino.h"
 #include	"clock.h"
@@ -173,16 +171,6 @@ void io_init(void) {
 		SET_OUTPUT(Z_ENABLE_PIN);
 	#endif
 
-	// E Stepper Enable
-	#ifdef E_ENABLE_PIN
-		#ifdef E_INVERT_ENABLE
-			WRITE(E_ENABLE_PIN, 0);
-		#else
-			WRITE(E_ENABLE_PIN, 1);
-		#endif
-		SET_OUTPUT(E_ENABLE_PIN);
-	#endif
-
 	// setup PWM timers: fast PWM, no prescaler
 	TCCR0A = MASK(WGM01) | MASK(WGM00);
 	// PWM frequencies in TCCR0B, see page 108 of the ATmega644 reference.
@@ -238,22 +226,6 @@ void io_init(void) {
 
 	#ifdef	STEPPER_ENABLE_PIN
 		power_off();
-	#endif
-
-	// set all heater pins to output
-	do {
-		#undef	DEFINE_HEATER
-		#define	DEFINE_HEATER(name, pin) WRITE(pin, 0); SET_OUTPUT(pin);
-			#include "config.h"
-		#undef DEFINE_HEATER
-	} while (0);
-
-	#ifdef	TEMP_MAX6675
-		// setup SPI
-		WRITE(SCK, 0);				SET_OUTPUT(SCK);
-		WRITE(MOSI, 1);				SET_OUTPUT(MOSI);
-		WRITE(MISO, 1);				SET_INPUT(MISO);
-		WRITE(SS, 1);					SET_OUTPUT(SS);
 	#endif
 
 	#ifdef TEMP_INTERCOM

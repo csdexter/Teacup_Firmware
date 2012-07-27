@@ -15,8 +15,6 @@
 #include	"delay.h"
 #include	"serial.h"
 #include	"sermsg.h"
-#include	"temp.h"
-#include	"heater.h"
 #include	"timer.h"
 #include	"sersendf.h"
 #include	"pinio.h"
@@ -65,13 +63,6 @@ void process_gcode_command() {
 		next_target.target.Y += startpoint.Y;
 		next_target.target.Z += startpoint.Z;
 	}
-
-	// E relative movement.
-	// Matches Sprinter's behaviour as of March 2012.
-	if (next_target.option_all_relative || next_target.option_e_relative)
-		next_target.target.e_relative = 1;
-	else
-		next_target.target.e_relative = 0;
 
 	// implement axis limits
 	#ifdef	X_MIN
@@ -289,16 +280,11 @@ void process_gcode_command() {
 					startpoint.Z = next_target.target.Z;
 					axisSelected = 1;
 				}
-				if (next_target.seen_E) {
-					startpoint.E = next_target.target.E;
-					axisSelected = 1;
-				}
 
 				if (axisSelected == 0) {
 					startpoint.X = next_target.target.X =
 					startpoint.Y = next_target.target.Y =
-					startpoint.Z = next_target.target.Z =
-					startpoint.E = next_target.target.E = 0;
+					startpoint.Z = next_target.target.Z = 0;
 				}
 
 				dda_new_startpoint();
@@ -342,8 +328,6 @@ void process_gcode_command() {
 		#endif
 	}
 	else if (next_target.seen_M) {
-		uint8_t i;
-
 		switch (next_target.M) {
 			case 0:
 				//? --- M0: machine stop ---
@@ -362,8 +346,6 @@ void process_gcode_command() {
 				//? http://linuxcnc.org/handbook/RS274NGC_3/RS274NGC_33a.html#1002379
 				//?
 				queue_wait();
-				for (i = 0; i < NUM_HEATERS; i++)
-					temp_set(i, 0);
 				power_off();
 				break;
 
@@ -391,38 +373,12 @@ void process_gcode_command() {
 				tool = next_tool;
 				break;
 
-			case 82:
-				//? --- M82 - Set E codes absolute ---
-				//?
-				//? This is the default and overrides G90/G91.
-				//? M82/M83 is not documented in the RepRap wiki, behaviour
-				//? was taken from Sprinter as of March 2012.
-				//?
-				//? While E does relative movements, it doesn't change its
-				//? position in the coordinate system. See also comment on G90.
-				//?
-
-				// No wait_queue() needed.
-				next_target.option_e_relative = 0;
-				break;
-
-			case 83:
-				//? --- M83 - Set E codes relative ---
-				//?
-				//? Counterpart to M82.
-				//?
-
-				// No wait_queue() needed.
-				next_target.option_e_relative = 1;
-				break;
-
 			// M84- stop idle hold
 			case 84:
 				stepper_disable();
 				x_disable();
 				y_disable();
 				z_disable();
-				e_disable();
 				break;
 
 			// M3/M101- extruder on
@@ -523,7 +479,7 @@ void process_gcode_command() {
 					queue_wait();
 				#endif
 				update_current_position();
-				sersendf_P(PSTR("X:%lq,Y:%lq,Z:%lq,E:%lq,F:%ld"), current_position.X, current_position.Y, current_position.Z, current_position.E, current_position.F);
+				sersendf_P(PSTR("X:%lq,Y:%lq,Z:%lq,F:%ld"), current_position.X, current_position.Y, current_position.Z, current_position.F);
 				// newline is sent from gcode_parse after we return
 				break;
 
@@ -539,7 +495,7 @@ void process_gcode_command() {
 				//?  FIRMWARE_NAME:Teacup FIRMWARE_URL:http%%3A//github.com/triffid/Teacup_Firmware/ PROTOCOL_VERSION:1.0 MACHINE_TYPE:Mendel EXTRUDER_COUNT:1 TEMP_SENSOR_COUNT:1 HEATER_COUNT:1
 				//?
 
-				sersendf_P(PSTR("FIRMWARE_NAME:Teacup FIRMWARE_URL:http%%3A//github.com/triffid/Teacup_Firmware/ PROTOCOL_VERSION:1.0 MACHINE_TYPE:Mendel EXTRUDER_COUNT:%d TEMP_SENSOR_COUNT:%d HEATER_COUNT:%d"), 1, NUM_TEMP_SENSORS, NUM_HEATERS);
+				sersendf_P(PSTR("FIRMWARE_NAME:Teacup FIRMWARE_URL:http%%3A//github.com/triffid/Teacup_Firmware/ PROTOCOL_VERSION:1.0 MACHINE_TYPE:Mendel"));
 				// newline is sent from gcode_parse after we return
 				break;
 
@@ -563,7 +519,6 @@ void process_gcode_command() {
 				x_enable();
 				y_enable();
 				z_enable();
-				e_enable();
 				break;
 
 			case 191:
