@@ -29,21 +29,6 @@ uint8_t tool;
 /// the tool to be changed when we get an M6
 uint8_t next_tool;
 
-
-/*
-	private functions
-
-	this is where we construct a move without a gcode command, useful for gcodes which require multiple moves eg; homing
-*/
-
-#if E_STARTSTOP_STEPS > 0
-/// move E by a certain amount at a certain speed
-static void SpecialMoveE(int32_t e, uint32_t f) {
-	TARGET t = { 0L, 0L, 0L, e, f, 1 };
-	enqueue(&t);
-}
-#endif /* E_STARTSTOP_STEPS > 0 */
-
 /************************************************************************//**
 
   \brief Processes command stored in global \ref next_target.
@@ -221,7 +206,6 @@ void process_gcode_command() {
 					#endif
 					axisSelected = 1;
 				}
-				// there's no point in moving E, as E has no endstops
 
 				if (!axisSelected) {
 					home();
@@ -394,7 +378,7 @@ void process_gcode_command() {
 				break;
 
 			case 7:
-			case 106:
+			//TOOD: insert cooling, flood on here
 				//? --- M106: Fan On ---
 				//?
 				//? Example: M106
@@ -406,13 +390,10 @@ void process_gcode_command() {
 					// wait for all moves to complete
 					queue_wait();
 				#endif
-				#ifdef HEATER_FAN
-					heater_set(HEATER_FAN, 255);
-				#endif
 				break;
 
 			case 9:
-			case 107:
+			//TODO: insert cooling off here
 				//? --- M107: Fan Off ---
 				//?
 				//? Example: M107
@@ -423,9 +404,6 @@ void process_gcode_command() {
 				#ifdef ENFORCE_ORDER
 					// wait for all moves to complete
 					queue_wait();
-				#endif
-				#ifdef HEATER_FAN
-					heater_set(HEATER_FAN, 0);
 				#endif
 				break;
 
@@ -460,8 +438,6 @@ void process_gcode_command() {
 				debug_flags = next_target.S;
 				break;
 			#endif
-
-			// M113- extruder PWM
 
 			case 114:
 				//? --- M114: Get Current Position ---
@@ -583,7 +559,7 @@ void process_gcode_command() {
 				//? Undocumented
 				//? This command is only available in DEBUG builds.
 				update_current_position();
-				sersendf_P(PSTR("{X:%ld,Y:%ld,Z:%ld,E:%ld,F:%lu,c:%lu}\t{X:%ld,Y:%ld,Z:%ld,E:%ld,F:%lu,c:%lu}\t"), current_position.X, current_position.Y, current_position.Z, current_position.E, current_position.F, movebuffer[mb_tail].c, movebuffer[mb_tail].endpoint.X, movebuffer[mb_tail].endpoint.Y, movebuffer[mb_tail].endpoint.Z, movebuffer[mb_tail].endpoint.E, movebuffer[mb_tail].endpoint.F,
+				sersendf_P(PSTR("{X:%ld,Y:%ld,Z:%ld,E:%ld,F:%lu,c:%lu}\t{X:%ld,Y:%ld,Z:%ld,F:%lu,c:%lu}\t"), current_position.X, current_position.Y, current_position.Z, current_position.E, current_position.F, movebuffer[mb_tail].c, movebuffer[mb_tail].endpoint.X, movebuffer[mb_tail].endpoint.Y, movebuffer[mb_tail].endpoint.Z, movebuffer[mb_tail].endpoint.E, movebuffer[mb_tail].endpoint.F,
 					#ifdef ACCELERATION_REPRAP
 						movebuffer[mb_tail].end_c
 					#else
@@ -628,3 +604,4 @@ void process_gcode_command() {
 		} // switch (next_target.M)
 	} // else if (next_target.seen_M)
 } // process_gcode_command()
+
