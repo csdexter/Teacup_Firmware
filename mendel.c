@@ -41,7 +41,6 @@
 #include	"debug.h"
 #include	"sersendf.h"
 #include	"heater.h"
-#include	"analog.h"
 #include	"pinio.h"
 #include	"arduino.h"
 #include	"clock.h"
@@ -283,18 +282,8 @@ void init(void) {
 	// set up timers
 	timer_init();
 
-	// read PID settings from EEPROM
-	heater_init();
-
 	// set up dda
 	dda_init();
-
-	// start up analog read interrupt loop,
-	// if any of the temp sensors in your config.h use analog interface
-	analog_init();
-
-	// set up temperature inputs
-	temp_init();
 
 	// enable interrupts
 	sei();

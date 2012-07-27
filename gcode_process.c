@@ -427,82 +427,14 @@ void process_gcode_command() {
 
 			// M3/M101- extruder on
 			case 3:
-			case 101:
-				//? --- M101: extruder on ---
-				//?
-				//? Undocumented.
-				if (temp_achieved() == 0) {
-					enqueue(NULL);
-				}
-				#ifdef DC_EXTRUDER
-					heater_set(DC_EXTRUDER, DC_EXTRUDER_PWM);
-				#elif E_STARTSTOP_STEPS > 0
-					do {
-						// backup feedrate, move E very quickly then restore feedrate
-						backup_f = startpoint.F;
-						startpoint.F = MAXIMUM_FEEDRATE_E;
-						SpecialMoveE(E_STARTSTOP_STEPS, MAXIMUM_FEEDRATE_E);
-						startpoint.F = backup_f;
-					} while (0);
-				#endif
+			//TODO: insert spindle on here
 				break;
 
 			// M102- extruder reverse
 
 			// M5/M103- extruder off
 			case 5:
-			case 103:
-				//? --- M103: extruder off ---
-				//?
-				//? Undocumented.
-				#ifdef DC_EXTRUDER
-					heater_set(DC_EXTRUDER, 0);
-				#elif E_STARTSTOP_STEPS > 0
-					do {
-						// backup feedrate, move E very quickly then restore feedrate
-						backup_f = startpoint.F;
-						startpoint.F = MAXIMUM_FEEDRATE_E;
-						SpecialMoveE(-E_STARTSTOP_STEPS, MAXIMUM_FEEDRATE_E);
-						startpoint.F = backup_f;
-					} while (0);
-				#endif
-				break;
-
-//TODO: remove as it's extruder-related
-// 			case 104:
-// 				//? --- M104: Set Extruder Temperature (Fast) ---
-// 				//?
-// 				//? Example: M104 S190
-// 				//?
-// 				//? Set the temperature of the current extruder to 190<sup>o</sup>C and return control to the host immediately (''i.e.'' before that temperature has been reached by the extruder).  See also M109.
-// 				//? Teacup supports an optional P parameter as a sensor index to address (eg M104 P1 S100 will set the bed temperature rather than the extruder temperature).
-// 				//?
-// 				if ( ! next_target.seen_S)
-// 					break;
-// 				if ( ! next_target.seen_P)
-// 					next_target.P = HEATER_EXTRUDER;
-// 				temp_set(next_target.P, next_target.S);
-// 				if (next_target.S)
-// 					power_on();
-// 				break;
-
-			case 105:
-				//? --- M105: Get Extruder Temperature ---
-				//?
-				//? Example: M105
-				//?
-				//? Request the temperature of the current extruder and the build base in degrees Celsius.  The temperatures are returned to the host computer.  For example, the line sent to the host in response to this command looks like
-				//?
-				//? <tt>ok T:201 B:117</tt>
-				//?
-				//? Teacup supports an optional P parameter as a sensor index to address.
-				//?
-				#ifdef ENFORCE_ORDER
-					queue_wait();
-				#endif
-				if ( ! next_target.seen_P)
-					next_target.P = TEMP_SENSOR_none;
-				temp_print(next_target.P);
+			//TODO: insert spindle off here
 				break;
 
 			case 7:
@@ -540,31 +472,6 @@ void process_gcode_command() {
 					heater_set(HEATER_FAN, 0);
 				#endif
 				break;
-
-//TODO: remove as it's extruder-related
-// 			case 109:
-// 				//? --- M109: Set Extruder Temperature ---
-// 				//?
-// 				//? Example: M109 S190
-// 				//?
-// 				//? Set the temperature of the current extruder to 190<sup>o</sup>C and wait for it to reach that value before sending an acknowledgment to the host.  In fact the RepRap firmware waits a while after the temperature has been reached for the extruder to stabilise - typically about 40 seconds.  This can be changed by a parameter in the firmware configuration file when the firmware is compiled.  See also M104 and M116.
-// 				//?
-// 				//? Teacup supports an optional P parameter as a sensor index to address.
-// 				//?
-// 				if ( ! next_target.seen_S)
-// 					break;
-// 				if ( ! next_target.seen_P)
-// 					next_target.P = HEATER_EXTRUDER;
-// 				temp_set(next_target.P, next_target.S);
-// 				if (next_target.S) {
-// 					power_on();
-// 					enable_heater();
-// 				}
-// 				else {
-// 					disable_heater();
-// 				}
-// 				enqueue(NULL);
-// 				break;
 
 			case 110:
 				//? --- M110: Set Current Line Number ---
@@ -645,83 +552,6 @@ void process_gcode_command() {
 
 				enqueue(NULL);
 				break;
-
-//TODO: remove as it's extruder-related                                
-// 			case 130:
-// 				//? --- M130: heater P factor ---
-// 				//? Undocumented.
-// 				if ( ! next_target.seen_P)
-// 					next_target.P = HEATER_EXTRUDER;
-// 				if (next_target.seen_S)
-// 					pid_set_p(next_target.P, next_target.S);
-// 				break;
-// 
-// 			case 131:
-// 				//? --- M131: heater I factor ---
-// 				//? Undocumented.
-// 				if ( ! next_target.seen_P)
-// 					next_target.P = HEATER_EXTRUDER;
-// 				if (next_target.seen_S)
-// 					pid_set_i(next_target.P, next_target.S);
-// 				break;
-// 
-// 			case 132:
-// 				//? --- M132: heater D factor ---
-// 				//? Undocumented.
-// 				if ( ! next_target.seen_P)
-// 					next_target.P = HEATER_EXTRUDER;
-// 				if (next_target.seen_S)
-// 					pid_set_d(next_target.P, next_target.S);
-// 				break;
-// 
-// 			case 133:
-// 				//? --- M133: heater I limit ---
-// 				//? Undocumented.
-// 				if ( ! next_target.seen_P)
-// 					next_target.P = HEATER_EXTRUDER;
-// 				if (next_target.seen_S)
-// 					pid_set_i_limit(next_target.P, next_target.S);
-// 				break;
-// 
-// 			case 134:
-// 				//? --- M134: save PID settings to eeprom ---
-// 				//? Undocumented.
-// 				heater_save_settings();
-// 				break;
-// 
-// 			case 135:
-// 				//? --- M135: set heater output ---
-// 				//? Undocumented.
-// 				if ( ! next_target.seen_P)
-// 					next_target.P = HEATER_EXTRUDER;
-// 				if (next_target.seen_S) {
-// 					heater_set(next_target.P, next_target.S);
-// 					power_on();
-// 				}
-// 				break;
-// 
-// 			#ifdef	DEBUG
-// 			case 136:
-// 				//? --- M136: PRINT PID settings to host ---
-// 				//? Undocumented.
-// 				//? This comand is only available in DEBUG builds.
-// 				if ( ! next_target.seen_P)
-// 					next_target.P = HEATER_EXTRUDER;
-// 				heater_print(next_target.P);
-// 				break;
-// 			#endif
-// 
-// 			case 140:
-// 				//? --- M140: Set heated bed temperature ---
-// 				//? Undocumented.
-// 				#ifdef	HEATER_BED
-// 					if ( ! next_target.seen_S)
-// 						break;
-// 					temp_set(HEATER_BED, next_target.S);
-// 					if (next_target.S)
-// 						power_on();
-// 				#endif
-// 				break;
 
 			case 190:
 				//? --- M190: Power On ---

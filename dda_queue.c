@@ -69,11 +69,8 @@ void queue_step() {
 	DDA* current_movebuffer = &movebuffer[mb_tail];
 	if (current_movebuffer->live) {
 		if (current_movebuffer->waitfor_temp) {
-			setTimer(HEATER_WAIT_TIMEOUT);
-			if (temp_achieved()) {
+		//TODO: currently short circuited, remove entire rigging
 				current_movebuffer->live = current_movebuffer->waitfor_temp = 0;
-				serial_writestr_P(PSTR("Temp achieved\n"));
-			}
 		}
 		else {
 			// NOTE: dda_step makes this interrupt interruptible for some time,

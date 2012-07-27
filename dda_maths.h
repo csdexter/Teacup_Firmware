@@ -44,12 +44,6 @@ inline int32_t um_to_steps_z(int32_t distance) {
                     STEPS_PER_M_Z % 1000000UL, 1000000UL);
 }
 
-static int32_t um_to_steps_e(int32_t) __attribute__ ((always_inline));
-inline int32_t um_to_steps_e(int32_t distance) {
-    return muldivQR(distance, STEPS_PER_M_E / 1000000UL,
-                    STEPS_PER_M_E % 1000000UL, 1000000UL);
-}
-
 // approximate 2D distance
 uint32_t approx_distance(uint32_t dx, uint32_t dy);
 

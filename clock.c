@@ -23,22 +23,6 @@
 	called from clock_10ms(), do not call directly
 */
 void clock_250ms() {
-	#ifndef	NO_AUTO_IDLE
-	if (temp_all_zero())	{
-		if (psu_timeout > (30 * 4)) {
-			power_off();
-		}
-		else {
-			uint8_t save_reg = SREG;
-			cli();
-			CLI_SEI_BUG_MEMORY_BARRIER();
-			psu_timeout++;
-			MEMORY_BARRIER();
-			SREG = save_reg;
-		}
-	}
-	#endif
-
 	ifclock(clock_flag_1s) {
 		if (DEBUG_POSITION && (debug_flags & DEBUG_POSITION)) {
 			// current position
@@ -70,8 +54,6 @@ void clock_250ms() {
 void clock_10ms() {
 	// reset watchdog
 	wd_reset();
-
-	temp_tick();
 
 	ifclock(clock_flag_250ms) {
 		clock_250ms();
