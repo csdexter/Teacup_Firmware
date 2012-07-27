@@ -17,6 +17,9 @@ Power
 /// Timeout counting is done in clock.c.
 /// It is used inside and outside of interrupts, which is why it has been made volatile
 extern volatile uint8_t psu_timeout;
+// Brought ps_is_on here (public) because we need the Charge Pump generator
+// to obey it.
+extern char ps_is_on;
 
 void power_on(void);
 void power_off(void);
@@ -117,67 +120,18 @@ Z Stepper
 	#define	z_max()							(0)
 #endif
 
+#ifndef ESTOP_INVERT_IN
+  #define estop_hit() (READ(ESTOP_IN_PIN)?1:0)
+#else
+  #define estop_hit() (READ(ESTOP_IN_PIN)?0:1)
+#endif
+
+
 /*
 End Step - All Steppers
 (so we don't have to delay in interrupt context)
 */
 
 #define unstep() 							do { _x_step(0); _y_step(0); _z_step(0); } while (0)
-
-/*
-Stepper Enable Pins
-*/
-
-#ifdef	STEPPER_ENABLE_PIN
-	#ifdef	STEPPER_INVERT_ENABLE
-		#define stepper_enable()	do { WRITE(STEPPER_ENABLE_PIN, 0); } while (0)
-		#define stepper_disable()	do { WRITE(STEPPER_ENABLE_PIN, 1); } while (0)
-	#else
-		#define stepper_enable()	do { WRITE(STEPPER_ENABLE_PIN, 1); } while (0)
-		#define stepper_disable()	do { WRITE(STEPPER_ENABLE_PIN, 0); } while (0)
-	#endif
-#else
-	#define	stepper_enable()		do { } while (0)
-	#define	stepper_disable()		do { } while (0)
-#endif
-
-#ifdef	X_ENABLE_PIN
-	#ifdef	X_INVERT_ENABLE
-		#define	x_enable()				do { WRITE(X_ENABLE_PIN, 0); } while (0)
-		#define	x_disable()				do { WRITE(X_ENABLE_PIN, 1); } while (0)
-	#else
-		#define	x_enable()				do { WRITE(X_ENABLE_PIN, 1); } while (0)
-		#define	x_disable()				do { WRITE(X_ENABLE_PIN, 0); } while (0)
-	#endif
-#else
-	#define	x_enable()					do { } while (0)
-	#define	x_disable()					do { } while (0)
-#endif
-
-#ifdef	Y_ENABLE_PIN
-	#ifdef	Y_INVERT_ENABLE
-		#define	y_enable()				do { WRITE(Y_ENABLE_PIN, 0); } while (0)
-		#define	y_disable()				do { WRITE(Y_ENABLE_PIN, 1); } while (0)
-	#else
-		#define	y_enable()				do { WRITE(Y_ENABLE_PIN, 1); } while (0)
-		#define	y_disable()				do { WRITE(Y_ENABLE_PIN, 0); } while (0)
-	#endif
-#else
-	#define	y_enable()					do { } while (0)
-	#define	y_disable()					do { } while (0)
-#endif
-
-#ifdef	Z_ENABLE_PIN
-	#ifdef	Z_INVERT_ENABLE
-		#define	z_enable()				do { WRITE(Z_ENABLE_PIN, 0); } while (0)
-		#define	z_disable()				do { WRITE(Z_ENABLE_PIN, 1); } while (0)
-	#else
-		#define	z_enable()				do { WRITE(Z_ENABLE_PIN, 1); } while (0)
-		#define	z_disable()				do { WRITE(Z_ENABLE_PIN, 0); } while (0)
-	#endif
-#else
-	#define	z_enable()					do { } while (0)
-	#define	z_disable()					do { } while (0)
-#endif
 
 #endif	/* _PINIO_H */

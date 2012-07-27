@@ -133,10 +133,6 @@ void dda_create(DDA *dda, TARGET *target) {
 	else {
 		// get steppers ready to go
 		power_on();
-		stepper_enable();
-		x_enable();
-		y_enable();
-		// Z is enabled in dda_start()
 
 		// since it's unusual to combine X, Y and Z changes in a single move on reprap, check if we can use simpler approximations before trying the full 3d approximation.
 		if (z_delta_um == 0)
@@ -325,11 +321,9 @@ void dda_create(DDA *dda, TARGET *target) {
 */
 void dda_start(DDA *dda) {
 	// called from interrupt context: keep it simple!
-	if ( ! dda->nullmove) {
+	if (! dda->nullmove) {
 		// get ready to go
 		psu_timeout = 0;
-		if (dda->z_delta)
-			z_enable();
 
 		// set direction outputs
 		x_direction(dda->x_direction);
@@ -639,14 +633,8 @@ void dda_step(DDA *dda) {
 
 	// If there are no steps left, we have finished.
 	if (move_state.x_steps == 0 && move_state.y_steps == 0 &&
-	    move_state.z_steps == 0) {
-		dda->live = 0;
-		#ifdef	DC_EXTRUDER
-			heater_set(DC_EXTRUDER, 0);
-		#endif
-		// z stepper is only enabled while moving
-		z_disable();
-	}
+	    move_state.z_steps == 0)
+	  dda->live = 0;
 	else
 		psu_timeout = 0;
 

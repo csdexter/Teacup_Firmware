@@ -11,6 +11,8 @@
 #include	"timer.h"
 #include	"debug.h"
 #include	"serial.h"
+#include  "arduino.h"
+#include  "pinio.h"
 #ifdef	TEMP_INTERCOM
 	#include	"intercom.h"
 #endif
@@ -45,11 +47,35 @@ void clock_250ms() {
 /*! do stuff every 10 milliseconds
 
 	call from ifclock(CLOCK_FLAG_10MS) in busy loops
+
+	We could have extended timer.c with a 80ms beacon but we'd rather not put
+	extra burden on our timing source AND we also did not want to use the
+	hardware to generate the Charge Pump output because we need it for the
+	Spindle Speed PWM.
 */
+
+static uint8_t clock_counter_80ms = 0;
+
 void clock_10ms() {
 	// reset watchdog
 	wd_reset();
 
+	//TODO: also tell the panel MCU, also tell the host (at least by sending XOFF)
+	if(estop_hit()) power_off();
+
+	// pulse Charge Pump if we're still operating
+	if(ps_is_on) {
+	  clock_counter_80ms++;
+
+	  switch (clock_counter_80ms) {
+	    case 1: WRITE(CHARGEPUMP_PIN, 1); break;
+	    case 5: WRITE(CHARGEPUMP_PIN, 0); break;
+	  }
+
+	  if (clock_counter_80ms > 8) clock_counter_80ms = 0;
+	}
+
+	// do quarter-second tasks
 	ifclock(clock_flag_250ms) {
 		clock_250ms();
 	}

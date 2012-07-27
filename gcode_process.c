@@ -357,14 +357,6 @@ void process_gcode_command() {
 				tool = next_tool;
 				break;
 
-			// M84- stop idle hold
-			case 84:
-				stepper_disable();
-				x_disable();
-				y_disable();
-				z_disable();
-				break;
-
 			// M3/M101- extruder on
 			case 3:
 			//TODO: insert spindle on here
@@ -483,29 +475,6 @@ void process_gcode_command() {
 				//? Wait for ''all'' temperatures and other slowly-changing variables to arrive at their set values.  See also M109.
 
 				enqueue(NULL);
-				break;
-
-			case 190:
-				//? --- M190: Power On ---
-				//? Undocumented.
-				//? This one is pointless in Teacup. Implemented to calm the RepRap gurus.
-				//?
-				power_on();
-				stepper_enable();
-				x_enable();
-				y_enable();
-				z_enable();
-				break;
-
-			case 191:
-				//? --- M191: Power Off ---
-				//? Undocumented.
-				//? Same as M2. RepRap obviously prefers to invent new numbers instead of looking into standards. 
-				#ifdef ENFORCE_ORDER
-					// wait for all moves to complete
-					queue_wait();
-				#endif
-				power_off();
 				break;
 
 			case 200:

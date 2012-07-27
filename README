@@ -3,6 +3,7 @@
 Generic 3-axis CNC Firmware for Arduino
 
 Based upon Teacup Firmware by Michael Moon which was forked on 2012-07-26
+Charge Pump code by Radu - Eosif Mihailescu <radu.mihailescu@linux360.ro> on 2012-07-27
 
 This is the code of the CNC Control Panel project and this folder contains the
 code for the motion control MCU. The code for the user interface (panel) MCU is
@@ -25,6 +26,20 @@ NOTES:
  * it contains motion planning routines and takes care of moving the CNC around
    under the command of the user interface (panel) MCU which, in turn, issues
    commands to us based on parsed G-code or user interaction
+
+HARDWARE NOTES:
+ * the current config.arduino.h defaults to the following setup:
+   * Zero3(2) -> X_DIR -> A1
+   * Zero3(3) -> X_STEP -> A0
+   * Zero3(4) -> Y_DIR -> A4
+   * Zero3(5) -> Y_STEP -> A3
+   * Zero3(6) -> Z_DIR -> D4
+   * Zero3(7) -> Z_STEP -> D2
+   * Zero3(10) -> Z_HOME -> D7
+   * Zero3(11) -> E_STOP -> D8
+   * Zero3(12) -> Y_HOME -> A5
+   * Zero3(13) -> X_HOME -> A2
+   * Zero3(16) -> C_PUMP -> D3
 
 For general questions and updates on this firmware package please contact the fork
 maintainer at <radu.mihailescu@linux360.ro>.

@@ -201,7 +201,6 @@ void home_z_negative() {
 			startpoint.Z = next_target.target.Z = 0;
 		#endif
 		dda_new_startpoint();
-		z_disable();
 	#endif
 }
 

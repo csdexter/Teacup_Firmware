@@ -126,50 +126,10 @@ void io_init(void) {
 		#endif
 	#endif
 
-	#if defined E_STEP_PIN && defined E_DIR_PIN
-		WRITE(E_STEP_PIN, 0);	SET_OUTPUT(E_STEP_PIN);
-		WRITE(E_DIR_PIN,  0);	SET_OUTPUT(E_DIR_PIN);
-	#endif
-
-	// Common Stepper Enable
-	#ifdef STEPPER_ENABLE_PIN
-		#ifdef STEPPER_INVERT_ENABLE
-			WRITE(STEPPER_ENABLE_PIN, 0);
-		#else
-			WRITE(STEPPER_ENABLE_PIN, 1);
-		#endif
-		SET_OUTPUT(STEPPER_ENABLE_PIN);
-	#endif
-
-	// X Stepper Enable
-	#ifdef X_ENABLE_PIN
-		#ifdef X_INVERT_ENABLE
-			WRITE(X_ENABLE_PIN, 0);
-		#else
-			WRITE(X_ENABLE_PIN, 1);
-		#endif
-		SET_OUTPUT(X_ENABLE_PIN);
-	#endif
-
-	// Y Stepper Enable
-	#ifdef Y_ENABLE_PIN
-		#ifdef Y_INVERT_ENABLE
-			WRITE(Y_ENABLE_PIN, 0);
-		#else
-			WRITE(Y_ENABLE_PIN, 1);
-		#endif
-		SET_OUTPUT(Y_ENABLE_PIN);
-	#endif
-
-	// Z Stepper Enable
-	#ifdef Z_ENABLE_PIN
-		#ifdef Z_INVERT_ENABLE
-			WRITE(Z_ENABLE_PIN, 0);
-		#else
-			WRITE(Z_ENABLE_PIN, 1);
-		#endif
-		SET_OUTPUT(Z_ENABLE_PIN);
-	#endif
+  // Charge Pump
+	WRITE(CHARGEPUMP_PIN, 0); SET_OUTPUT(CHARGEPUMP_PIN);
+	// E-Stop Input
+	SET_INPUT(ESTOP_IN_PIN);
 
 	// setup PWM timers: fast PWM, no prescaler
 	TCCR0A = MASK(WGM01) | MASK(WGM00);
