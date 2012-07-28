@@ -1,9 +1,9 @@
-#ifndef	_SERIAL_H
-#define	_SERIAL_H
+#ifndef  _SERIAL_H
+#define  _SERIAL_H
 
-#include	<stdint.h>
-#include	<avr/io.h>
-#include	<avr/pgmspace.h>
+#include  <stdint.h>
+#include  <avr/io.h>
+#include  <avr/pgmspace.h>
 
 // initialise serial subsystem
 void serial_init(void);
@@ -27,4 +27,4 @@ void serial_writestr(uint8_t *data);
 void serial_writeblock_P(PGM_P data, int datalen);
 void serial_writestr_P(PGM_P data);
 
-#endif	/* _SERIAL_H */
+#endif  /* _SERIAL_H */

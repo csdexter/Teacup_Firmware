@@ -1,4 +1,3 @@
-
 /** \file
   \brief Mathematic algorithms for the digital differential analyser (DDA).
 */

@@ -100,10 +100,10 @@ CC = $(ARCH)gcc
 OBJDUMP = $(ARCH)objdump
 OBJCOPY = $(ARCH)objcopy
 
-OPTIMIZE = -Os -ffunction-sections -finline-functions-called-once -mcall-prologues
+OPTIMIZE = -Os -ffunction-sections -fdata-sections -finline-functions-called-once -mcall-prologues
 # OPTIMIZE = -O0
 CFLAGS = -g -Wall -Wstrict-prototypes $(OPTIMIZE) -mmcu=$(MCU_TARGET) $(DEFS) -std=gnu99 -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums -save-temps -Winline
-LDFLAGS = -Wl,--as-needed -Wl,--gc-sections
+LDFLAGS = -Os -Wl,--as-needed -Wl,--gc-sections
 LIBS = -lm
 LIBDEPS =
 SUBDIRS =

@@ -2,15 +2,14 @@
  \brief I/O primitives - step, enable, direction, endstops etc
 */
 
-#ifndef	_PINIO_H
-#define	_PINIO_H
+#ifndef _PINIO_H
+#define _PINIO_H
 
-#include	"config.h"
+#include "config.h"
 
 /*
 Power
 */
-
 /// psu_timeout is set to zero when we step, and increases over time so we can
 /// turn the motors off when they've been idle for a while.
 /// A second function is to guarantee a minimum on time of the PSU.
@@ -27,97 +26,67 @@ void power_off(void);
 /*
 X Stepper
 */
-
-#define	_x_step(st)						WRITE(X_STEP_PIN, st)
-#define	x_step()							_x_step(1);
-#ifndef	X_INVERT_DIR
-	#define	x_direction(dir)		WRITE(X_DIR_PIN, dir)
+#define  _x_step(st)            WRITE(X_STEP_PIN, st)
+#define  x_step()              _x_step(1);
+#ifndef  X_INVERT_DIR
+  #define  x_direction(dir)    WRITE(X_DIR_PIN, dir)
 #else
-	#define	x_direction(dir)		WRITE(X_DIR_PIN, (dir)^1)
+  #define  x_direction(dir)    WRITE(X_DIR_PIN, (dir)^1)
 #endif
-#ifdef	X_MIN_PIN
-	#ifndef X_INVERT_MIN
-		#define x_min()						(READ(X_MIN_PIN)?1:0)
-	#else
-		#define x_min()						(READ(X_MIN_PIN)?0:1)
-	#endif
+#ifdef  X_MIN_PIN
+  #ifndef X_INVERT_MIN
+    #define x_min()            (READ(X_MIN_PIN)?1:0)
+  #else
+    #define x_min()            (READ(X_MIN_PIN)?0:1)
+  #endif
 #else
-	#define	x_min()							(0)
-#endif
-#ifdef	X_MAX_PIN
-	#ifndef X_INVERT_MAX
-		#define x_max()						(READ(X_MAX_PIN)?1:0)
-	#else
-		#define x_max()						(READ(X_MAX_PIN)?0:1)
-	#endif
-#else
-	#define	x_max()							(0)
+  #define  x_min()              (0)
 #endif
 
 /*
 Y Stepper
 */
-
-#define	_y_step(st)						WRITE(Y_STEP_PIN, st)
-#define	y_step()							_y_step(1);
-#ifndef	Y_INVERT_DIR
-	#define	y_direction(dir)		WRITE(Y_DIR_PIN, dir)
+#define  _y_step(st)            WRITE(Y_STEP_PIN, st)
+#define  y_step()              _y_step(1);
+#ifndef  Y_INVERT_DIR
+  #define  y_direction(dir)    WRITE(Y_DIR_PIN, dir)
 #else
-	#define	y_direction(dir)		WRITE(Y_DIR_PIN, (dir)^1)
+  #define  y_direction(dir)    WRITE(Y_DIR_PIN, (dir)^1)
 #endif
-#ifdef	Y_MIN_PIN
-	#ifndef Y_INVERT_MIN
-		#define y_min()						(READ(Y_MIN_PIN)?1:0)
-	#else
-		#define y_min()						(READ(Y_MIN_PIN)?0:1)
-	#endif
+#ifdef  Y_MIN_PIN
+  #ifndef Y_INVERT_MIN
+    #define y_min()            (READ(Y_MIN_PIN)?1:0)
+  #else
+    #define y_min()            (READ(Y_MIN_PIN)?0:1)
+  #endif
 #else
-	#define	y_min()							(0)
-#endif
-#ifdef	Y_MAX_PIN
-	#ifndef Y_INVERT_MAX
-		#define y_max()						(READ(Y_MAX_PIN)?1:0)
-	#else
-		#define y_max()						(READ(Y_MAX_PIN)?0:1)
-	#endif
-#else
-	#define	y_max()							(0)
+  #define  y_min()              (0)
 #endif
 
 /*
 Z Stepper
 */
-
 #if defined Z_STEP_PIN && defined Z_DIR_PIN
-	#define	_z_step(st)					WRITE(Z_STEP_PIN, st)
-	#define	z_step()						_z_step(1);
-	#ifndef	Z_INVERT_DIR
-		#define	z_direction(dir)	WRITE(Z_DIR_PIN, dir)
-	#else
-		#define	z_direction(dir)	WRITE(Z_DIR_PIN, (dir)^1)
-	#endif
+  #define  _z_step(st)          WRITE(Z_STEP_PIN, st)
+  #define  z_step()            _z_step(1);
+  #ifndef  Z_INVERT_DIR
+    #define  z_direction(dir)  WRITE(Z_DIR_PIN, dir)
+  #else
+    #define  z_direction(dir)  WRITE(Z_DIR_PIN, (dir)^1)
+  #endif
 #else
-	#define	_z_step(x)					do { } while (0)
-	#define	z_step()						do { } while (0)
-	#define	z_direction(x)			do { } while (0)
+  #define  _z_step(x)          do { } while (0)
+  #define  z_step()            do { } while (0)
+  #define  z_direction(x)      do { } while (0)
 #endif
-#ifdef	Z_MIN_PIN
-	#ifndef Z_INVERT_MIN
-		#define z_min()						(READ(Z_MIN_PIN)?1:0)
-	#else
-		#define z_min()						(READ(Z_MIN_PIN)?0:1)
-	#endif
+#ifdef  Z_MIN_PIN
+  #ifndef Z_INVERT_MIN
+    #define z_min()            (READ(Z_MIN_PIN)?1:0)
+  #else
+    #define z_min()            (READ(Z_MIN_PIN)?0:1)
+  #endif
 #else
-	#define	z_min()							(0)
-#endif
-#ifdef	Z_MAX_PIN
-	#ifndef Z_INVERT_MAX
-		#define z_max()						(READ(Z_MAX_PIN)?1:0)
-	#else
-		#define z_max()						(READ(Z_MAX_PIN)?0:1)
-	#endif
-#else
-	#define	z_max()							(0)
+  #define  z_min()              (0)
 #endif
 
 #ifndef ESTOP_INVERT_IN
@@ -131,7 +100,6 @@ Z Stepper
 End Step - All Steppers
 (so we don't have to delay in interrupt context)
 */
+#define unstep()               do { _x_step(0); _y_step(0); _z_step(0); } while (0)
 
-#define unstep() 							do { _x_step(0); _y_step(0); _z_step(0); } while (0)
-
-#endif	/* _PINIO_H */
+#endif /* _PINIO_H */
