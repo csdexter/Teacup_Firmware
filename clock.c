@@ -60,21 +60,6 @@ void clock_10ms() {
 	// reset watchdog
 	wd_reset();
 
-	//TODO: also tell the panel MCU, also tell the host (at least by sending XOFF)
-	if(estop_hit()) power_off();
-
-	// pulse Charge Pump if we're still operating
-	if(ps_is_on) {
-	  clock_counter_80ms++;
-
-	  switch (clock_counter_80ms) {
-	    case 1: WRITE(CHARGEPUMP_PIN, 1); break;
-	    case 5: WRITE(CHARGEPUMP_PIN, 0); break;
-	  }
-
-	  if (clock_counter_80ms > 8) clock_counter_80ms = 0;
-	}
-
 	// do quarter-second tasks
 	ifclock(clock_flag_250ms) {
 		clock_250ms();

@@ -123,6 +123,21 @@ ISR(TIMER1_COMPA_vect) {
 	MEMORY_BARRIER();
 	SREG = sreg_save;
 }
+
+volatile uint8_t cp_state = 0;
+
+//Charge pump signal generator
+ISR(TIMER2_COMPA_vect) {
+	// save status register
+	uint8_t sreg_save = SREG;
+
+        WRITE(CHARGEPUMP_PIN, cp_state);
+        cp_state ^= 1;
+
+	// restore status register
+	MEMORY_BARRIER();
+	SREG = sreg_save;
+}
 #endif /* ifdef HOST */
 
 /// initialise timer and enable system clock interrupt.
@@ -137,6 +152,12 @@ void timer_init()
 	OCR1B = TICK_TIME & 0xFFFF;
 	// enable interrupt
 	TIMSK1 = MASK(OCIE1B);
+
+        //And again, for the Charge Pump outout
+        TCCR2A = MASK(WGM21);
+        TCCR2B = MASK(CS21); // F_CPU / 8 and ...
+        OCR2A = 80; // ... to get 12.5kHz
+	TIMSK2 = MASK(OCIE2A);
 }
 
 #ifdef	HOST

@@ -126,7 +126,7 @@ void io_init(void) {
 		#endif
 	#endif
 
-  // Charge Pump
+        // Charge Pump
 	WRITE(CHARGEPUMP_PIN, 0); SET_OUTPUT(CHARGEPUMP_PIN);
 	// E-Stop Input
 	SET_INPUT(ESTOP_IN_PIN);
@@ -144,21 +144,6 @@ void io_init(void) {
 	TIMSK0 = 0;
 	OCR0A = 0;
 	OCR0B = 0;
-
-	TCCR2A = MASK(WGM21) | MASK(WGM20);
-	// PWM frequencies in TCCR2B, see page 156 of the ATmega644 reference.
-	TCCR2B = MASK(CS20); // F_CPU / 256  (about 78(62.5) kHz on a 20(16) MHz chip)
-	//TCCR2B = MASK(CS21);              // F_CPU / 256 / 8  (about 9.8(7.8) kHz)
-	//TCCR2B = MASK(CS20) | MASK(CS21); // F_CPU / 256 / 32  (about 2.4(2.0) kHz)
-	//TCCR2B = MASK(CS22);              // F_CPU / 256 / 64  (about 1220(977) Hz)
-	//TCCR2B = MASK(CS20) | MASK(CS22); // F_CPU / 256 / 128  (about 610(488) Hz)
-	//TCCR2B = MASK(CS21) | MASK(CS22); // F_CPU / 256 / 256  (about 305(244) Hz)
-	#ifndef FAST_PWM
-		TCCR2B = MASK(CS20) | MASK(CS21) | MASK(CS22); // F_CPU / 256 / 1024
-	#endif
-	TIMSK2 = 0;
-	OCR2A = 0;
-	OCR2B = 0;
 
 	#ifdef	TCCR3A
 		TCCR3A = MASK(WGM30);
@@ -182,10 +167,6 @@ void io_init(void) {
 		TIMSK5 = 0;
 		OCR5A = 0;
 		OCR5B = 0;
-	#endif
-
-	#ifdef	STEPPER_ENABLE_PIN
-		power_off();
 	#endif
 
 	#ifdef TEMP_INTERCOM
@@ -246,6 +227,6 @@ int main (void)
 
 		ifclock(clock_flag_10ms) {
 			clock_10ms();
-		}
+		}                
 	}
 }

@@ -64,8 +64,8 @@
 
 	valid range = 20 to 4'0960'000 (0.02 to 40960 steps/mm)
 */
-#define	STEPS_PER_M_X					200000
-#define	STEPS_PER_M_Y					200000
+#define	STEPS_PER_M_X					333333
+#define	STEPS_PER_M_Y					333333
 #define	STEPS_PER_M_Z					333333
 
 /*
@@ -76,9 +76,9 @@
 */
 
 /// used for G0 rapid moves and as a cap for all other feedrates
-#define	MAXIMUM_FEEDRATE_X		2500
-#define	MAXIMUM_FEEDRATE_Y		2500
-#define	MAXIMUM_FEEDRATE_Z		2500
+#define	MAXIMUM_FEEDRATE_X		2000
+#define	MAXIMUM_FEEDRATE_Y		2000
+#define	MAXIMUM_FEEDRATE_Z		2000
 
 /// used when searching endstops and as default feedrate
 #define	SEARCH_FEEDRATE_X			60

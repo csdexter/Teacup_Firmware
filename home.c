@@ -11,8 +11,15 @@
 #include	"gcode_parse.h"
 
 /// home all 3 axes
+//TODO: make homing sequence configurable, some designers are braindead enough to need it (Heiz, I'm looking at you!)
 void home() {
-	#if defined	X_MIN_PIN
+	#if defined Z_MIN_PIN
+		home_z_negative();
+	#elif defined	Z_MAX_PIN
+		home_z_positive();
+	#endif
+
+  	#if defined	X_MIN_PIN
 		home_x_negative();
 	#elif defined X_MAX_PIN
 		home_x_positive();
@@ -22,12 +29,6 @@ void home() {
 		home_y_negative();
 	#elif defined Y_MAX_PIN
 		home_y_positive();
-	#endif
-
-	#if defined Z_MIN_PIN
-		home_z_negative();
-	#elif defined	Z_MAX_PIN
-		home_z_positive();
 	#endif
 }
 
