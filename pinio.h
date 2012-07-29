@@ -8,22 +8,6 @@
 #include "config.h"
 
 /*
-Power
-*/
-/// psu_timeout is set to zero when we step, and increases over time so we can
-/// turn the motors off when they've been idle for a while.
-/// A second function is to guarantee a minimum on time of the PSU.
-/// Timeout counting is done in clock.c.
-/// It is used inside and outside of interrupts, which is why it has been made volatile
-extern volatile uint8_t psu_timeout;
-// Brought ps_is_on here (public) because we need the Charge Pump generator
-// to obey it.
-extern char ps_is_on;
-
-void power_on(void);
-void power_off(void);
-
-/*
 X Stepper
 */
 #define  _x_step(st)            WRITE(X_STEP_PIN, st)
@@ -90,9 +74,9 @@ Z Stepper
 #endif
 
 #ifndef ESTOP_INVERT_IN
-  #define estop_hit() (READ(ESTOP_IN_PIN)?1:0)
+  #define estop_hit() (READ(ESTOP_IN_PIN) ? 1 : 0)
 #else
-  #define estop_hit() (READ(ESTOP_IN_PIN)?0:1)
+  #define estop_hit() (READ(ESTOP_IN_PIN) ? 0 : 1)
 #endif
 
 

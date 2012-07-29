@@ -93,7 +93,7 @@ PROGID = stk500v2
 
 PROGRAM = mendel
 
-SOURCES = $(PROGRAM).c gcode_parse.c gcode_process.c dda.c dda_maths.c dda_queue.c timer.c sermsg.c watchdog.c debug.c sersendf.c intercom.c pinio.c clock.c home.c crc.c delay.c
+SOURCES = $(PROGRAM).c gcode_parse.c gcode_process.c dda.c dda_maths.c dda_queue.c timer.c sermsg.c watchdog.c debug.c sersendf.c intercom.c clock.c home.c crc.c delay.c
 
 ARCH = avr-
 CC = $(ARCH)gcc

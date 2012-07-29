@@ -121,10 +121,6 @@ void dda_create(DDA *dda, TARGET *target) {
 
   if (!dda->total_steps) dda->nullmove = 1;
   else {
-    // get steppers ready to go
-    //TODO: consider removing this as the Zero3 does its own automated power saving
-    power_on();
-
     //check if we can use simpler approximations before trying the full 3d approximation.
     if (z_delta_um == 0)
       distance = approx_distance(x_delta_um, y_delta_um);
@@ -313,9 +309,6 @@ void dda_create(DDA *dda, TARGET *target) {
 void dda_start(DDA *dda) {
   // called from interrupt context: keep it simple!
   if (!dda->nullmove) {
-    // get ready to go
-    psu_timeout = 0;
-
     // set direction outputs
     x_direction(dda->x_direction);
     y_direction(dda->y_direction);
@@ -565,8 +558,6 @@ void dda_step(DDA *dda) {
   // If there are no steps left, we have finished.
   if (!(move_state.x_steps || move_state.y_steps || move_state.z_steps))
     dda->live = 0;
-  else
-    psu_timeout = 0;
 
 #ifdef ACCELERATION_RAMPING
   // we don't hit maximum speed exactly with acceleration calculation, so limit it here

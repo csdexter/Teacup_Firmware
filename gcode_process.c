@@ -402,7 +402,6 @@ void process_gcode_command() {
         //? http://linuxcnc.org/handbook/RS274NGC_3/RS274NGC_33a.html#1002379
         //?
         queue_wait();
-        power_off();
         break;
         
       case 3:
@@ -555,7 +554,6 @@ void process_gcode_command() {
       case 200:
         //? --- M200: report endstop status ---
         //? Report the current status of the endstops configured in the firmware to the host.
-        power_on();
 #if defined(X_MIN_PIN)
           sersendf_P(PSTR("x_min:%d "), x_min());
 #endif

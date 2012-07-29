@@ -57,7 +57,6 @@ void clock_10ms() {
   if(estop_hit()) {
     timer_stop();
     queue_flush();
-    power_off();
     cli();
     for (;;) wd_reset();
   }
