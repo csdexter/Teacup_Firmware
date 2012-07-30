@@ -197,7 +197,9 @@
 //#define Z_INVERT_DIR
 #define Z_INVERT_MIN 1
 
-// 12.5kHz Watchdog signal
+// 12.5kHz Watchdog signal, only on D3 (= Timer2, Channel B; Timer1 is used for
+// stepping/system and Timer0 is used for PWM. We could have D11 as Channel A of
+// Timer2, but then that's MOSI)
 #define CHARGEPUMP_PIN DIO3
 
 // Emergency stop signal

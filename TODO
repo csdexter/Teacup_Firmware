@@ -1,7 +1,6 @@
 Road map:
 1) [DONE] Remove all 3D-printer specific stuff (mainly anything extruder or heater -related) and tweak what's left for style and size (i.e. if the ceiling's gone, we don't need the pillars either)
 2) [DONE] Tag/snapshot this as the smallest, simplest G-code interpreter that can drive the CNC
-12k code, 730 bytes data <-- if only all software were *that* good today.
 3) [DONE] Add charge pump code (12.5kHz 50% duty cycle square wave)
 4) Add intended/missing language features to gcode_*.[ch] using existing structure and conventions
 5) Add intended/missing functional features to rest of the code (most notably, arcs)

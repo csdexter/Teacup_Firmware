@@ -89,19 +89,19 @@ ISR(TIMER1_COMPA_vect) {
 
   // Check if this is a real step, or just a next_step_time "overflow"
   if (next_step_time < 65536) {
-    // step!
 #ifdef DEBUG_LED_PIN
+    // step!
     WRITE(DEBUG_LED_PIN, 1);
 #endif
 
     // disable this interrupt. if we set a new timeout, it will be re-enabled when appropriate
     TIMSK1 &= ~_BV(OCIE1A);
-    
+
     // stepper tick
     queue_step();
 
-    // led off
 #ifdef DEBUG_LED_PIN
+    // led off
     WRITE(DEBUG_LED_PIN, 0);
 #endif
 
@@ -124,17 +124,6 @@ ISR(TIMER1_COMPA_vect) {
   SREG = sreg_save;
 }
 
-//Charge pump signal generator
-ISR(TIMER2_COMPA_vect) {
-  // save status register
-  uint8_t sreg_save = SREG;
-
-  TOGGLE(CHARGEPUMP_PIN);
-
-  // restore status register
-  MEMORY_BARRIER();
-  SREG = sreg_save;
-}
 #endif /* ifdef HOST */
 
 /// initialise timer and enable system clock interrupt.
@@ -150,11 +139,13 @@ void timer_init()
   // enable interrupt
   TIMSK1 = _BV(OCIE1B);
 
-  //And again, for the Charge Pump outout
-  TCCR2A = _BV(WGM21);
-  TCCR2B = _BV(CS21); // F_CPU / 8 and ...
-  OCR2A = 80; // ... to get 12.5kHz
-  TIMSK2 = _BV(OCIE2A);
+  //And again, for the Charge Pump output
+  // 16MHz / 8 / 80 = 2 x 12.5kHz
+  TCCR2A = _BV(WGM22);  // CTC mode
+  TCCR2B = _BV(COM2A0); // Toggle OC2A on compare
+  OCR2A = F_CPU / (25000UL << 3); // Faster than multiplying by 8
+  TCCR2B = _BV(CS21);
+  TIMSK2 = 0; // No interrupts
 }
 
 #ifdef HOST
@@ -242,8 +233,9 @@ void setTimer(uint32_t delay) {
 
 /// stop timers - emergency stop
 void timer_stop() {
-  // disable all interrupts
+  // disable timer interrupts
   TIMSK1 = 0;
-  TIMSK2 = 0;
+  // disable the charge pump
+  TCCR2B = 0;
 }
 #endif /* ifdef HOST */
