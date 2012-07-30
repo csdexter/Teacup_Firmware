@@ -1,11 +1,11 @@
-\form#0:$2^PIN$
-\form#1:$\max(\Delta x, \Delta y, \Delta z, \Delta e)$
-\form#2:$\sqrt{\Delta x^2 + \Delta y^2}$
-\form#3:$\sqrt{\Delta x^2 + \Delta y^2 + \Delta z^2}$
-\form#4:$log_2$
-\form#5:$ mantissa * 10^{-(exponent - 1)} * ((sign * 2) - 1)$
-\form#6:$10^{-exponent}$
-\form#7:$OUT = k_P (S - T) + k_I \int (S - T) + k_D \frac{dT}{dt}$
-\form#8:$-i_{limit} < i_{factor} < i_{limit}$
-\form#9:$-i_{limit} < \sum{\Delta t} < i_{limit}$
-\form#10:$2^n$
+\form#0:$\max(\Delta x, \Delta y, \Delta z, \Delta e)$
+\form#1:$\sqrt{\Delta x^2 + \Delta y^2}$
+\form#2:$\sqrt{\Delta x^2 + \Delta y^2 + \Delta z^2}$
+\form#3:$log_2$
+\form#4:$ mantissa * 10^{-(exponent - 1)} * ((sign * 2) - 1)$
+\form#5:$10^{-exponent}$
+\form#6:$2^n$
+\form#7:$2^PIN$
+\form#8:$OUT = k_P (S - T) + k_I \int (S - T) + k_D \frac{dT}{dt}$
+\form#9:$-i_{limit} < i_{factor} < i_{limit}$
+\form#10:$-i_{limit} < \sum{\Delta t} < i_{limit}$
