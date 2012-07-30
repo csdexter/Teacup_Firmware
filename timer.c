@@ -140,11 +140,10 @@ void timer_init()
   TIMSK1 = _BV(OCIE1B);
 
   //And again, for the Charge Pump output
-  // 16MHz / 8 / 80 = 2 x 12.5kHz
-  TCCR2A = _BV(WGM22);  // CTC mode
-  TCCR2B = _BV(COM2A0); // Toggle OC2A on compare
+  // e.g. 16MHz / 8 / _80_ = 2 * 12.5kHz => 80 = 16MHz / 2 * 12.5 kHz * 8
   OCR2A = F_CPU / (25000UL << 3); // Faster than multiplying by 8
-  TCCR2B = _BV(CS21);
+  TCCR2A = _BV(WGM22); // CTC mode
+  TCCR2B = _BV(COM2A0) | _BV(CS21); // Toggle OC2A on compare and 1/8 prescaler
   TIMSK2 = 0; // No interrupts
 }
 
