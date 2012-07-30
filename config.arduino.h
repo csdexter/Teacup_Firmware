@@ -170,8 +170,6 @@
 // to generate it in hardware in the future. It also leaves out the other two
 // PWM pins, just in case we need them later on.
 // This also does not use the SPI pins such that INTERCOM can run over those.
-// In the production assembly (which uses the Pro Mini instead of the Uno), the
-// I2C pins are also free.
 // X-axis controls
 #define X_STEP_PIN AIO0
 #define X_DIR_PIN AIO1
@@ -183,9 +181,7 @@
 
 // Y-axis controls
 #define Y_STEP_PIN AIO3
-// AIO6 in production (Pro Mini)
 #define Y_DIR_PIN AIO4
-// AIO7 in production (Pro Mini)
 #define Y_MIN_PIN AIO5
 //#define Y_INVERT_DIR
 #define Y_INVERT_MIN 1
