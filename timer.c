@@ -124,6 +124,15 @@ ISR(TIMER1_COMPA_vect) {
   SREG = sreg_save;
 }
 
+ISR(TIMER2_COMPA_vect) {
+  uint8_t sreg_save = SREG;
+  
+  TOGGLE(CHARGEPUMP_PIN);
+  
+  MEMORY_BARRIER();
+  SREG = sreg_save;
+}
+
 #endif /* ifdef HOST */
 
 /// initialise timer and enable system clock interrupt.
@@ -142,9 +151,9 @@ void timer_init()
   //And again, for the Charge Pump output
   // e.g. 16MHz / 8 / _80_ = 2 * 12.5kHz => 80 = 16MHz / 2 * 12.5 kHz * 8
   OCR2A = F_CPU / (25000UL << 3); // Faster than multiplying by 8
-  TCCR2A = _BV(WGM22); // CTC mode
-  TCCR2B = _BV(COM2A0) | _BV(CS21); // Toggle OC2A on compare and 1/8 prescaler
-  TIMSK2 = 0; // No interrupts
+  TCCR2A = /*_BV(COM2B0) |*/ _BV(WGM21); // Toggle OC2B on compare
+  TCCR2B = _BV(CS21) ; // CTC mode and 1/8 prescaler
+  TIMSK2 = _BV(OCIE2A); // No interrupts
 }
 
 #ifdef HOST
