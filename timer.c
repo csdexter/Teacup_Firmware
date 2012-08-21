@@ -141,11 +141,10 @@ void timer_init()
 
   //And again, for the Charge Pump output
   // e.g. 16MHz / 8 / _80_ = 2 * 12.5kHz => 80 = 16MHz / 2 * 12.5 kHz * 8
-  // OCR2B will drive the output but the timer gets reloaded from OCR2A only
-  OCR2B = OCR2A = F_CPU / (25000UL << 3); // Faster than multiplying by 8
-  TCCR2A = _BV(COM2B0) | _BV(WGM21); // Toggle OC2B on compare and CTC mode
-  TCCR2B = _BV(CS21) ; // 1/8 prescaler
-  TIMSK2 = 0; // No interrupts
+  OCR0A = F_CPU / (25000UL << 3); // Faster than multiplying by 8
+  TCCR0A = _BV(COM0A0) | _BV(WGM01); // Toggle OC0A on compare and CTC mode
+  TCCR0B = _BV(CS01); // 1/8 prescaler
+  TIMSK0 = 0; // No interrupts
 }
 
 #ifdef HOST

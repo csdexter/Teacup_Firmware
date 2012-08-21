@@ -94,20 +94,6 @@ void io_init(void) {
   // E-Stop Input
   SET_INPUT(ESTOP_IN_PIN);
 
-  // setup PWM timers: fast PWM, no prescaler
-  TCCR0A = _BV(WGM01) | _BV(WGM00);
-  // PWM frequencies in TCCR0B, see page 108 of the ATmega644 reference.
-  TCCR0B = _BV(CS00); // F_CPU / 256 (about 78(62.5) kHz on a 20(16) MHz chip)
-  //TCCR0B = _BV(CS01);              // F_CPU / 256 / 8  (about 9.8(7.8) kHz)
-  //TCCR0B = _BV(CS00) | _BV(CS01); // F_CPU / 256 / 64  (about 1220(977) Hz)
-  //TCCR0B = _BV(CS02);              // F_CPU / 256 / 256  (about 305(244) Hz)
-#ifndef FAST_PWM
-  TCCR0B = _BV(CS00) | _BV(CS02); // F_CPU / 256 / 1024  (about 76(61) Hz)
-#endif
-  TIMSK0 = 0;
-  OCR0A = 0;
-  OCR0B = 0;
-
 #ifdef  TCCR3A
   TCCR3A = _BV(WGM30);
   TCCR3B = _BV(WGM32) | _BV(CS30);

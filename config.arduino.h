@@ -72,10 +72,9 @@
   Units are mm/min
 */
 /// used for G0 rapid moves and as a cap for all other feedrates
-//TODO: sort out why we can't seem to go over 2000mm/min when we should be able to do 2500mm/min according to the specs
-#define MAXIMUM_FEEDRATE_X 2000
-#define MAXIMUM_FEEDRATE_Y 2000
-#define MAXIMUM_FEEDRATE_Z 2000
+#define MAXIMUM_FEEDRATE_X 2500
+#define MAXIMUM_FEEDRATE_Y 2500
+#define MAXIMUM_FEEDRATE_Z 2500
 
 /// used when searching endstops and as default feedrate
 #define SEARCH_FEEDRATE_X 60
@@ -172,31 +171,30 @@
 // This also does not use the SPI pins such that INTERCOM can run over those.
 // X-axis controls
 #define X_STEP_PIN AIO0
-#define X_DIR_PIN AIO1
-#define X_MIN_PIN AIO2
+#define X_DIR_PIN AIO3
+#define X_MIN_PIN DIO2
 // The S-720 has the X-axis backwards
 #define X_INVERT_DIR 1
 // ... and all limit switches active-low
 #define X_INVERT_MIN  1
 
 // Y-axis controls
-#define Y_STEP_PIN AIO3
+#define Y_STEP_PIN AIO1
 #define Y_DIR_PIN AIO4
-#define Y_MIN_PIN AIO5
+#define Y_MIN_PIN DIO3
 //#define Y_INVERT_DIR
 #define Y_INVERT_MIN 1
 
 // Z-axis controls
-#define Z_STEP_PIN DIO2
-#define Z_DIR_PIN DIO4
-#define Z_MIN_PIN DIO7
+#define Z_STEP_PIN AIO2
+#define Z_DIR_PIN AIO5
+#define Z_MIN_PIN DIO4
 //#define Z_INVERT_DIR
 #define Z_INVERT_MIN 1
 
-// 12.5kHz Watchdog signal, only on D3 (= Timer2, Channel B; Timer1 is used for
-// stepping/system and Timer0 is used for PWM. We could have D11 as Channel A of
-// Timer2, but then that's MOSI)
-#define CHARGEPUMP_PIN DIO3
+// 12.5kHz Watchdog signal, only on D6 (= Timer0, Channel A; Timer1 is used for
+// stepping/system)
+#define CHARGEPUMP_PIN DIO6 // For reference only, not configurable
 
 // Emergency stop signal
 #define ESTOP_IN_PIN DIO8
@@ -259,16 +257,6 @@
 */
 //#define    STEP_INTERRUPT_INTERRUPTIBLE  1
 #define STEP_INTERRUPT_INTERRUPTIBLE 0
-
-/** \def ENDSTOP_STEPS
-  number of steps to run into the endstops intentionally
-    As Endstops trigger false alarm sometimes, Teacup debounces them by counting a number of consecutive positives. Valid range is 1...255. Use 4 or less for reliable endstops, 8 or even more for flaky ones.
-
-    TODO: investigate removing this altogether. The S-720 has reed switch
-          endstops that are also buffered on the Zero3, I don't expect it to
-          send any false positives.
-*/
-#define ENDSTOP_STEPS 4
 
 
 /***************************************************************************\
