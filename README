@@ -1,5 +1,3 @@
-[this is a work in progress, do not use in production]
-
 Generic 3-axis CNC Firmware for Arduino
 
 Based upon Teacup Firmware by Michael Moon which was forked on 2012-07-26
@@ -29,17 +27,17 @@ NOTES:
 
 HARDWARE NOTES:
  * the current config.arduino.h defaults to the following setup:
-   * Zero3(2) -> X_DIR -> A1
+   * Zero3(2) -> X_DIR -> A3
    * Zero3(3) -> X_STEP -> A0
    * Zero3(4) -> Y_DIR -> A4
-   * Zero3(5) -> Y_STEP -> A3
-   * Zero3(6) -> Z_DIR -> D4
-   * Zero3(7) -> Z_STEP -> D2
-   * Zero3(10) -> Z_HOME -> D7
+   * Zero3(5) -> Y_STEP -> A1
+   * Zero3(6) -> Z_DIR -> A5
+   * Zero3(7) -> Z_STEP -> A2
+   * Zero3(10) -> Z_HOME -> D4
    * Zero3(11) -> E_STOP -> D8
-   * Zero3(12) -> Y_HOME -> A5
-   * Zero3(13) -> X_HOME -> A2
-   * Zero3(16) -> C_PUMP -> D3
+   * Zero3(12) -> Y_HOME -> D3
+   * Zero3(13) -> X_HOME -> D2
+   * Zero3(16) -> C_PUMP -> D6
 
 For general questions and updates on this firmware package please contact the fork
 maintainer at <radu.mihailescu@linux360.ro>.
